@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "pathsuggestion",
+  "version": "${version}",
+  "name": "Path Suggestion",
+  "description": "Simplifies command suggestions",
+  "authors": [
+    "liach"
+  ],
+  "contact": {
+    "homepage": "https://github.com/liachmodded/talk"
+  },
+  "license": "The Unlicense",
+  "icon": "assets/pathsuggestion/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.github.liachmodded.pathsuggestion.PathSuggestion"
+    ]
+  },
+  "mixins": [
+    "pathsuggestion.mixins.json"
+  ],
+  "requires": {
+    "fabricloader": ">=0.4.0"
+  }
+}

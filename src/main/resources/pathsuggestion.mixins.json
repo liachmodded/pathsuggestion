@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "com.github.liachmodded.pathsuggestion.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "ChatScreenMixin",
+    "CommandScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
