@@ -8,16 +8,13 @@
     "liach"
   ],
   "contact": {
-    "homepage": "https://github.com/liachmodded/talk"
+    "homepage": "https://github.com/liachmodded/pathsuggestion",
+    "issues": "https://github.com/liachmodded/pathsuggestion/issues",
+    "source": "https://github.com/liachmodded/pathsuggestion"
   },
   "license": "The Unlicense",
   "icon": "assets/pathsuggestion/icon.png",
   "environment": "client",
-  "entrypoints": {
-    "client": [
-      "com.github.liachmodded.pathsuggestion.PathSuggestion"
-    ]
-  },
   "mixins": [
     "pathsuggestion.mixins.json"
   ],

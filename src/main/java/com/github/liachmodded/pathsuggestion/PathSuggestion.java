@@ -1,22 +1,18 @@
 package com.github.liachmodded.pathsuggestion;
 
+import com.mojang.brigadier.Message;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import net.fabricmc.api.ClientModInitializer;
-import net.minecraft.text.TextComponent;
+import net.minecraft.text.Text;
+import net.minecraft.text.Texts;
 
-public class PathSuggestion implements ClientModInitializer {
+public final class PathSuggestion {
 
   private static final char[] SEPARATORS = new char[]{'.', ':', '/'};
-
-  @Override
-  public void onInitializeClient() {
-
-  }
 
   public static void shrinkSuggestions(Suggestions suggestions) {
     final List<Suggestion> entries = suggestions.getList();
@@ -37,19 +33,20 @@ public class PathSuggestion implements ClientModInitializer {
       }
       final String prefix = text.substring(0, loc + 1);
 
-      TextComponent resultTooltip = null;
+      Text resultTooltip = null;
       while (iterator.hasNext()) {
         final Suggestion seek = iterator.next();
         if (!seek.getText().startsWith(prefix)) {
           iterator.previous();
           break;
         }
-        final TextComponent tooltip = (TextComponent) seek.getTooltip();
+        final Message tooltip = seek.getTooltip();
         if (tooltip != null) {
+          final Text tooltipText = Texts.toText(tooltip);
           if (resultTooltip == null) {
-            resultTooltip = tooltip;
+            resultTooltip = tooltipText;
           } else {
-            resultTooltip.append(tooltip);
+            resultTooltip.append(tooltipText);
           }
         }
       }
@@ -106,4 +103,6 @@ public class PathSuggestion implements ClientModInitializer {
     }
     return max;
   }
+
+  private PathSuggestion() {}
 }
