@@ -10,9 +10,14 @@ import java.util.ListIterator;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 
+/**
+ * Utilities to shrink the suggestions.
+ */
 public final class PathSuggestion {
 
   private static final char[] SEPARATORS = new char[]{'.', ':', '/'};
+
+  private PathSuggestion() {}
 
   public static void shrinkSuggestions(Suggestions suggestions) {
     final List<Suggestion> entries = suggestions.getList();
@@ -32,6 +37,7 @@ public final class PathSuggestion {
         continue;
       }
       final String prefix = text.substring(0, loc + 1);
+      final int startIndex = iterator.previousIndex();
 
       Text resultTooltip = null;
       while (iterator.hasNext()) {
@@ -52,12 +58,17 @@ public final class PathSuggestion {
       }
 
       final Suggestion tail = iterator.previous();
+      final int endIndex = iterator.nextIndex();
       iterator.next();
 
-      final int firstEffectiveSeparator = locateLastSeparator(text, getCommonPrefix(text, tail.getText(), loc + 1));
-      final String actualSuggested = text.substring(0, firstEffectiveSeparator + 1);
+      if (startIndex == endIndex) {
+        updated.add(tail); // Just skip through if there is only one option available
+      } else {
+        final int firstEffectiveSeparator = locateLastSeparator(text, getCommonPrefix(text, tail.getText(), loc + 1));
+        final String actualSuggested = text.substring(0, firstEffectiveSeparator + 1);
 
-      updated.add(new Suggestion(current.getRange(), actualSuggested, resultTooltip));
+        updated.add(new ShrinkedSuggestion(current.getRange(), actualSuggested, resultTooltip));
+      }
     }
 
     entries.clear();
@@ -74,10 +85,6 @@ public final class PathSuggestion {
     return len - 1;
   }
 
-  private static int locateFirstSeparator(final String st) {
-    return locateFirstSeparator(st, 0);
-  }
-
   private static int locateFirstSeparator(final String st, final int start) {
     int min = -1;
     for (char c : SEPARATORS) {
@@ -87,10 +94,6 @@ public final class PathSuggestion {
       }
     }
     return min;
-  }
-
-  private static int locateLastSeparator(final String st) {
-    return locateLastSeparator(st, st.length() - 1);
   }
 
   private static int locateLastSeparator(final String st, final int start) {
@@ -103,6 +106,4 @@ public final class PathSuggestion {
     }
     return max;
   }
-
-  private PathSuggestion() {}
 }
