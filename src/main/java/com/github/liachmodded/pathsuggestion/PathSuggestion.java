@@ -4,7 +4,7 @@ import com.mojang.brigadier.Message;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
 import net.minecraft.text.Text;
@@ -16,16 +16,21 @@ import net.minecraft.text.Texts;
 public final class PathSuggestion {
 
   private static final char[] SEPARATORS = new char[]{'.', ':', '/'};
+  private static final Comparator<Suggestion> SUGGESTION_COMPARATOR = (a, b) -> {
+    boolean l = a instanceof ShrinkedSuggestion;
+    boolean r = b instanceof ShrinkedSuggestion;
+    return l == r ? a.compareTo(b) : l ? -1 : 1;
+  };
 
   private PathSuggestion() {}
 
   public static void shrinkSuggestions(Suggestions suggestions) {
     final List<Suggestion> entries = suggestions.getList();
-    Collections.sort(entries);
+    entries.sort(null);
 
     final int sharedPrefix = getCommonPrefix(entries.get(0).getText(), entries.get(entries.size() - 1).getText(), 0);
 
-    final List<Suggestion> updated = new ArrayList<>();
+    final List<Suggestion> updated = new ArrayList<>(entries.size());
     final ListIterator<Suggestion> iterator = entries.listIterator();
     while (iterator.hasNext()) {
       final Suggestion current = iterator.next();
@@ -70,6 +75,8 @@ public final class PathSuggestion {
         updated.add(new ShrinkedSuggestion(current.getRange(), actualSuggested, resultTooltip));
       }
     }
+
+    updated.sort(SUGGESTION_COMPARATOR);
 
     entries.clear();
     entries.addAll(updated);

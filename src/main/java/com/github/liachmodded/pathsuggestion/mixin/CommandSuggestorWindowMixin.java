@@ -1,8 +1,9 @@
 package com.github.liachmodded.pathsuggestion.mixin;
 
+import com.github.liachmodded.pathsuggestion.RefreshableCommandSuggestor;
 import com.github.liachmodded.pathsuggestion.ShrinkedSuggestion;
 import com.mojang.brigadier.suggestion.Suggestion;
-import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.gui.screen.CommandSuggestor;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -11,23 +12,23 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(targets = "net/minecraft/client/gui/screen/ChatScreen$SuggestionWindow")
-public abstract class ChatScreenSuggestionWindowMixin {
+@Mixin(CommandSuggestor.SuggestionWindow.class)
+public abstract class CommandSuggestorWindowMixin {
 
-  @Shadow(aliases = {"field_2397", "this$0"}) // javap the class to check out the field name!
+  @Shadow(aliases = {"field_21615", "this$0"})
   @Final
-  private ChatScreen field_2397;
+  private CommandSuggestor field_21615;
 
   @Shadow
-  public abstract void close();
+  public abstract void discard();
 
   @Inject(method = "complete()V",
-      at = @At("RETURN"),
+      at = @At("TAIL"),
       locals = LocalCapture.CAPTURE_FAILHARD)
   public void onComplete(CallbackInfo ci, Suggestion suggestion, int cursor) {
     if (suggestion instanceof ShrinkedSuggestion) {
-      close();
-      ((ChatScreenAccessor) field_2397).callUpdateCommand();
+      discard();
+      ((RefreshableCommandSuggestor) field_21615).refresh();
     }
   }
 }

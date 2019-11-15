@@ -3,12 +3,8 @@
   "package": "com.github.liachmodded.pathsuggestion.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "ChatScreenAccessor",
-    "ChatScreenMixin",
-    "ChatScreenSuggestionWindowMixin",
-    "CommandScreenAccessor",
-    "CommandScreenMixin",
-    "CommandScreenSuggestionWindowMixin"
+    "CommandSuggestorMixin",
+    "CommandSuggestorWindowMixin"
   ],
   "injectors": {
     "defaultRequire": 1
