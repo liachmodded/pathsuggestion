@@ -19,7 +19,7 @@
     "pathsuggestion.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.6.3",
-    "minecraft": ">=1.15-alpha.19.46.b"
+    "minecraft": ">=${minecraft_version}",
+    "fabricloader": ">=${loader_version}"
   }
 }
