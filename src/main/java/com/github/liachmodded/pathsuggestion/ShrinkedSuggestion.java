@@ -8,8 +8,7 @@ import com.mojang.brigadier.suggestion.Suggestion;
  * Ugly hack for the game to auto request renewal when the shrinked suggestion is used.
  */
 public final class ShrinkedSuggestion extends Suggestion {
-
-  ShrinkedSuggestion(StringRange range, String text, Message tooltip) {
-    super(range, text, tooltip);
-  }
+    ShrinkedSuggestion(StringRange range, String text, Message tooltip) {
+        super(range, text, tooltip);
+    }
 }

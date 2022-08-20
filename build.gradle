@@ -1,67 +1,48 @@
 plugins {
-	id 'fabric-loom' version '0.2.6-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-version = project.modVersion
-group = project.mavenGroup
-
-minecraft {
-}
-
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraftVersion}"
-	mappings "net.fabricmc:yarn:${project.yarnMappings}:v2"
-	modCompile "net.fabricmc:fabric-loader:${project.loaderVersion}"
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 }
 
 processResources {
-	inputs.property "version", project.version
+	Map<String, Object> properties = new HashMap<>()
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
+	properties.put("version", project.version)
+	properties.put("minecraft_version", project.minecraft_version)
+	properties.put("loader_version", project.loader_version)
 
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
+	properties.forEach((k, v) -> inputs.property(k, v.toString()))
+	filesMatching("fabric.mod.json") {
+		expand properties
 	}
 }
 
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
+	options.release = 17
 }
 
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
-	from "LICENSE"
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
+	withSourcesJar()
 }
 
 jar {
 	from "LICENSE"
 }
 
-// configure the maven publication
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
+			from components.java
 		}
 	}
+
+	repositories {}
 }
